@@ -12,14 +12,17 @@ const UpdateEmployee = () => {
     email: "",
   });
   console.log("employee", employee);
-  const fetchData = async () => {
-    const employee = await getEmployee(id);
-    setEmployee(employee);
-    return employee;
-  };
+
   useEffect(() => {
-    const data = fetchData();
-    setEmployee(data);
+    const fetchData = async () => {
+      try {
+        const response = await getEmployee(id);
+        setEmployee(response);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchData();
   }, []);
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -34,11 +37,7 @@ const UpdateEmployee = () => {
     navigate("/employeeList");
   };
   const handleClear = () => {
-    setEmployee({
-      firstName: "",
-      lastName: "",
-      email: "",
-    });
+    navigate("/employeeList");
   };
   return (
     <div className="flex max-w-2xl shadow border-b mx-auto">
