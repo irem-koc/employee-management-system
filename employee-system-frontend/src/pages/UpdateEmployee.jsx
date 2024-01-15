@@ -1,21 +1,37 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { addEmployee } from "../services/addEmployee";
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { getEmployee } from "../services/getEmployee";
+import { updateEmployee } from "../services/updateEmployee";
 
-const AddEmployee = () => {
+const UpdateEmployee = () => {
   const navigate = useNavigate();
+  const { id } = useParams();
   const [employee, setEmployee] = useState({
     firstName: "",
     lastName: "",
     email: "",
   });
-
+  console.log("employee", employee);
+  const fetchData = async () => {
+    const employee = await getEmployee(id);
+    setEmployee(employee);
+    return employee;
+  };
+  useEffect(() => {
+    const data = fetchData();
+    setEmployee(data);
+  }, []);
   const handleChange = (e) => {
     const { name, value } = e.target;
     setEmployee({
       ...employee,
       [name]: value,
     });
+  };
+  const handleEditEmployee = async () => {
+    const updated = await updateEmployee(employee);
+    console.log("al işte", updated);
+    navigate("/employeeList");
   };
   const handleClear = () => {
     setEmployee({
@@ -24,23 +40,11 @@ const AddEmployee = () => {
       email: "",
     });
   };
-  const handleAddEmployee = async (e) => {
-    e.preventDefault();
-    try {
-      const response = await addEmployee(employee);
-      handleClear();
-      navigate("/employeeList");
-      console.log("response", response);
-    } catch (error) {
-      alert(error);
-    }
-  };
-  console.log(employee);
   return (
     <div className="flex max-w-2xl shadow border-b mx-auto">
       <div className="px-8 py-8">
         <div className="font-thin text-2xl">
-          <h1>Add New Employee</h1>
+          <h1>Edit Employee</h1>
         </div>
         <div className="items-center justify-center h-14 w-full my-4">
           <label
@@ -89,7 +93,7 @@ const AddEmployee = () => {
         </div>
         <div className="items-center justify-center h-14 w-full my-4 space-x-4 pt-4">
           <button
-            onClick={handleAddEmployee}
+            onClick={handleEditEmployee}
             className="rounded text-white  font-semibold bg-green-400 py-2 px-6 hover:bg-green-700"
           >
             Save
@@ -106,4 +110,4 @@ const AddEmployee = () => {
   );
 };
 
-export default AddEmployee;
+export default UpdateEmployee;

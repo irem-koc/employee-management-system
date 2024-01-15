@@ -8,7 +8,9 @@ import org.springframework.stereotype.Service;
 
 import dev.ikoc.employeems.business.abstracts.EmployeeService;
 import dev.ikoc.employeems.business.requests.CreateEmployeeRequest;
+import dev.ikoc.employeems.business.requests.UpdateEmployeeRequest;
 import dev.ikoc.employeems.business.responses.GetAllEmployeeResponse;
+import dev.ikoc.employeems.business.responses.GetByIdResponse;
 import dev.ikoc.employeems.core.utils.mappers.MapperService;
 import dev.ikoc.employeems.dataAccess.abstracts.EmployeeRepository;
 import dev.ikoc.employeems.entities.concretes.Employee;
@@ -38,6 +40,21 @@ public class EmployeeManager implements EmployeeService {
     public ResponseEntity<String> deleteEmployee(int id) {
         this.employeeRepository.deleteById(id);
         return ResponseEntity.ok().body("Employee deleted successfully");
+    }
+
+    public GetByIdResponse getEmployee(int id) {
+        Employee employee = this.employeeRepository.findById(id).orElseThrow();
+        GetByIdResponse response = this.mapperService.forResponse().map(employee, GetByIdResponse.class);
+        return response;
+    }
+    @Override
+    public Employee updateEmployee(UpdateEmployeeRequest updateEmployeeRequest, int id) {
+        Employee employee = this.employeeRepository.findById(id).orElseThrow();
+        employee.setFirstName(updateEmployeeRequest.getFirstName());
+        employee.setLastName(updateEmployeeRequest.getLastName());
+        employee.setEmail(updateEmployeeRequest.getEmail());
+        employeeRepository.save(employee);
+        return employee;
     }
     
 }
