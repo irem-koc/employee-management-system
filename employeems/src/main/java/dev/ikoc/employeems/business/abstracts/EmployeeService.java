@@ -12,5 +12,7 @@ public interface EmployeeService {
     ResponseEntity<String> createEmployee(CreateEmployeeRequest createEmployeeRequest);
 
     List<GetAllEmployeeResponse> getEmployees();
+
+    ResponseEntity<String> deleteEmployee(int id);
     
 }

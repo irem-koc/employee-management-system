@@ -1,21 +1,16 @@
-import { useEffect, useState } from "react";
+import { useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { addEmployee } from "../services/addEmployee";
-import { getAllEmployees } from "../services/getAllEmployees";
 
 const AddEmployee = () => {
-  const [data, setData] = useState();
+  const div = useRef(null);
+  const navigate = useNavigate();
   const [employee, setEmployee] = useState({
     firstName: "",
     lastName: "",
     email: "",
   });
-  const fetchData = async () => {
-    const allData = await getAllEmployees();
-    setData(allData);
-  };
-  useEffect(() => {
-    fetchData();
-  }, []);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setEmployee({
@@ -34,9 +29,9 @@ const AddEmployee = () => {
     e.preventDefault();
     try {
       const response = await addEmployee(employee);
-      const newEmployeeList = await getAllEmployees();
       handleClear();
-      setData(newEmployeeList);
+      navigate("/employeeList");
+      div.current.scrollIntoView({ behavior: "smooth", block: "end" });
       console.log("response", response);
     } catch (error) {
       alert(error);
@@ -108,7 +103,6 @@ const AddEmployee = () => {
             Clear
           </button>
         </div>
-        {JSON.stringify(data)}
       </div>
     </div>
   );

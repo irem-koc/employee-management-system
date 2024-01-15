@@ -34,5 +34,10 @@ public class EmployeeManager implements EmployeeService {
 
         return employeesResponse;
     }
+    @Override
+    public ResponseEntity<String> deleteEmployee(int id) {
+        this.employeeRepository.deleteById(id);
+        return ResponseEntity.ok().body("Employee deleted successfully");
+    }
     
 }
